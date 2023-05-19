@@ -8,7 +8,7 @@ def clear_submit():
 
 
 st.set_page_config(page_title="MedPlantsGPT", page_icon="📖", layout="wide")
-st.header("📖KnowledgeGPT")
+st.header("📖Base Knowledge")
 
 sidebar()
 
