@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "medplantsgpt"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8.1, !=3.9.7"
+streamlit = "^1.22.0"
+langchain = "^0.0.173"
+docx2txt = "^0.8"
+pypdf = "^3.8.1"
+llama-index = "^0.6.8"
+rarfile = "^4.0"
+py7zr = "^0.20.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
