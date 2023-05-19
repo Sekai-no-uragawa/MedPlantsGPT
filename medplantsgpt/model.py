@@ -1,19 +1,24 @@
-import os
-import openai
-from langchain.chat_models import ChatOpenAI
-from llama_index import ComposableGraph, GPTListIndex, LLMPredictor, GPTSimpleVectorIndex, ServiceContext, \
-    SimpleDirectoryReader
+from langchain import HuggingFacePipeline
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from llama_index import ComposableGraph, GPTListIndex, LLMPredictor, GPTVectorStoreIndex, ServiceContext, \
+    SimpleDirectoryReader, LangchainEmbedding
 
 from file import check_index_file_exists, get_index_filepath, get_name_with_json_extension
 
+MODEL_NAME = "IlyaGusev/fred_t5_ru_turbo_alpaca"
 
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
-openai.api_key = OPENAI_API_KEY
+llm_predictor = LLMPredictor(
+    llm=HuggingFacePipeline.from_model_id(
+        model_id=MODEL_NAME,
+        task="text2text-generation",
+        model_kwargs={"temperature":0.1, "max_length":1500},
+        device=1
+    )
+)
 
-llm_predictor = LLMPredictor(llm=ChatOpenAI(
-    temperature=0.2, model_name="gpt-3.5-turbo"))
+embed_model = LangchainEmbedding(HuggingFaceEmbeddings(model_name="ai-forever/sbert_large_mt_nlu_ru"))
 
-service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
+service_context = ServiceContext.from_defaults(chunk_size_limit=512, llm_predictor=llm_predictor, embed_model=embed_model)
 
 
 def create_index(filepath, index_name):
@@ -23,7 +28,7 @@ def create_index(filepath, index_name):
 
     index_name = get_name_with_json_extension(index_name)
     documents = SimpleDirectoryReader(input_files=[filepath]).load_data()
-    index = GPTSimpleVectorIndex.from_documents(documents)
+    index = GPTVectorStoreIndex.from_documents(documents, service_context=service_context)
     index.save_to_disk(get_index_filepath(index_name))
     return index
 
@@ -33,7 +38,7 @@ def get_index_by_index_name(index_name):
     if check_index_file_exists(index_name) is False:
         return None
     index_filepath = get_index_filepath(index_name)
-    index = GPTSimpleVectorIndex.load_from_disk(index_filepath, service_context=service_context)
+    index = GPTVectorStoreIndex.load_from_disk(index_filepath, service_context=service_context)
     return index
 
 

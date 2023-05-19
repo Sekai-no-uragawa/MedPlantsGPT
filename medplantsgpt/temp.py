@@ -11,7 +11,7 @@ from file import get_index_path, get_index_name_from_file_path, check_index_file
     decompress_files_and_get_filepaths, clean_files, check_index_exists
 
 app = Flask(__name__)
-
+#1
 
 @app.route('/upload', methods=['POST'])
 def upload_file():

@@ -5,7 +5,7 @@ import rarfile
 import py7zr
 from pathlib import Path
 
-index_path = './documents'
+index_path = './data/storage'
 index_file_dir = Path(index_path)
 
 compress_path = './decompress'
