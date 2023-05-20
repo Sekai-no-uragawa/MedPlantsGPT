@@ -3,6 +3,7 @@ import json
 import constants
 import pandas as pd
 import streamlit as st
+import pydeck as pdk
 from langchain import OpenAI
 from llama_index import (Document, GPTVectorStoreIndex, LLMPredictor,
                          PromptHelper, QuestionAnswerPrompt, ServiceContext,
@@ -10,17 +11,19 @@ from llama_index import (Document, GPTVectorStoreIndex, LLMPredictor,
 from llama_index.node_parser import SimpleNodeParser
 from prompts import get_prompt
 from streamlit_lottie import st_lottie
+import yaml
 
-CATEGORIES = constants.CATEGORIES
-REGIONS = constants.REGIONS
-PLANTS_INFO = constants.PLANTS_INFO
-PLANTS = list(PLANTS_INFO.keys())
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+CATEGORIES = constants.CATEGORIES
+REGIONS = constants.REGIONS
+PLANTS_INFO = constants.PLANTS_INFO
+RU_TO_EN = constants.RU_TO_EN
+PLANTS = list(PLANTS_INFO.keys())
 
 
 def clear_submit():
@@ -63,7 +66,7 @@ def main_page():
     with header_div:
         col1, col2 = st.columns((1, 3))
 
-        lottie_path_teeth = '../data/plant.json'
+        lottie_path_teeth = 'data\plant.json'
         with open(lottie_path_teeth, "r") as f:
             lottie_teeth = json.load(f)
 
@@ -128,10 +131,36 @@ def main_page():
                         with st.expander(cat):
                             st.markdown(selected_plant[cat])
                     st.text('Карта распространения')
-                    st.image(
-                        'https://plant.depo.msu.ru/open/public/scan.jpg?pcode=MW0436310&fp-type=florus'
-                    )
-
+                    #MAP
+                    with open("C:\\Users\\1bitt\\Documents\\projects\\MedPlantsGPT\\data\\name_to_coord.yml", "r", encoding='utf-8') as stream:
+                        try:
+                            name_to_coord = yaml.load(stream, Loader=yaml.Loader)
+                        except yaml.YAMLError as exc:
+                            print(exc)
+                    right_name = sel_plant.upper()[0] + sel_plant.lower()[1:]
+                    if right_name in list(RU_TO_EN.keys()):
+                        coord = name_to_coord[RU_TO_EN[right_name]]
+                        df = pd.DataFrame(coord, columns=['lat', 'lon'])
+                        st.pydeck_chart(
+                            pdk.Deck(
+                                map_style='mapbox://styles/mapbox/light-v9',
+                                initial_view_state=pdk.ViewState(
+                                    latitude=61.160019,
+                                    longitude=87.213516,
+                                    zoom=3),
+                                layers=[
+                                    pdk.Layer('ScatterplotLayer',
+                                              data=df,
+                                              opacity=0.5,
+                                              get_position='[lon, lat]',
+                                              radius_scale=6,
+                                              get_radius = 3000,
+                                                auto_highlight = True,
+                                              get_color=['255', '30', '30'])
+                                ],
+                            ))
+                    else:
+                        st.text('Данные по источникам произрастания еще не добавлены')
 
 if __name__ == '__main__':
     st.set_page_config(page_title="MedPlantsGPT", page_icon="🌱", layout="wide")

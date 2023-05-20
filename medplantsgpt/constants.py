@@ -59,6 +59,67 @@ PLANTS = [
 ]
 
 
+RU_TO_EN = {
+    'Аир обыкновенный':'Acorus calamus',
+    'Алтей лекарственный':'Althaea officinalis',
+    'Багульник болотный':'Ledum palustre',
+    'Бадан толстолистный':'Bergenia crassifolia',
+    'Баранец обыкновенный':'Huperzia selago',
+    'Бессмертник песчаный':'Helichrysum arenarium',
+    'Борец (аконит) белоустый':'Aconitum leucostomum',
+    'Валериана лекарственная':'Valeriana officinalis',
+    'Вахта трехлистная':'Menyanthes trifoliata',
+    'Вздутоплодник сибирский':'Phlojodicarpus sibiricus',
+    'Володушка золотистая':'Bupleurum longifolium',
+    'Гамамелис виргинский':'Hamamelis virginiana',
+    'Дурман обыкновенный':'Datura stramonium',
+    'Душица обыкновенная':'Origanum vulgare',
+    'Желтушник раскидистый':'Erysimum canescens',
+    'Жостер слабительный':'Rhamnus cathartica',
+    'Катарантус розовый':'Catharanthus roseus',
+    'Копеечник альпийский':'Hedysarum alpinum',
+    'Крушина ольховидная':'Frangula alnus',
+    'Лабазник вязолистный':'Filipendula ulmaria',
+    'Леспедеца двуцветная':'Lespedeza bicolor',
+    'Наперстянка шерстистая':'Digitalis lanata',
+    'Одуванчик изогнутый':'Taraxacum officinale',
+    'Очиток большой':'Hylotelephium maximum',
+    'Пижма обыкновенная':'Tanacetum vulgare',
+    'Пион уклоняющийся':'Paeonia anomala',
+    'Пихта сибирская':'Abies sibirica',
+    'Подорожник блошный':'Plantago afra',
+    'Подофилл щитовидный':'Podophyllum peltatum',
+    'Полынь горькая':'Artemisia absinthium',
+    'Пустырник сердечный':'Leonurus cardiaca',
+    'Родиола розовая':'Rhodiola rosea',
+    'Синюха голубая':'Polemonium caeruleum',
+    'Скумпия кожевенная':'Cotinus coggygria',
+    'Смоковница обыкновенная':'Ficus carica',
+    'Солодка голая':'Glycyrrhiza glabra',
+    'Сумах дубильный':'Rhus coriaria',
+    'Сушеница топяная':'Gnaphalium uliginosum',
+    'Термопсис ланцетный':'Thermopsis lanceolata',
+    'Тимьян обыкновенный':'Thymus vulgaris',
+    'Тмин обыкновенный':'Carum carvi',
+    'Толокнянка обыкновенная':'Arctostaphylos uva-ursi',
+    'Тыква обыкновенная':'Cucurbita pepo',
+    'Тысячелистник обыкновенный':'Achillea millefolium',
+    'Фенхель обыкновенный':'Foeniculum vulgare',
+    'Фиалка трехцветная':'Viola tricolor',
+    'Хвощ полевой':'Equisetum arvense',
+    'Хмель обыкновенный':'Humulus lupulus',
+    'Тимьян ползучий':'Thymus serpyllum',
+    'Чемерица лобеля':'Veratrum lobelianum',
+    'Череда трехраздельная':'Bidens tripartita',
+    'Чистотел большой':'Chelidonium majus',
+    'Шалфей лекарственный':'Salvia officinalis',
+    'Шиповник майский':'Rosa cinnamomea',
+    'Шлемник байкальский':'Scutellaria baicalensis',
+    'Щавель конский':'Rumex confertus',
+    'Якорцы стелющиеся':'Tribulus terrestris'
+}
+
+
 CATEGORIES = [
     'Описание',
     'Другие виды',
@@ -154,8 +215,9 @@ REGIONS = {
         'Чукотский автономный округ',
     ]
 }
+
 import yaml
-with open("../data/dataset/data.yml", "r", encoding='utf-8') as stream:
+with open("data\dataset\data.yml", "r", encoding='utf-8') as stream:
     try:
         PLANTS_INFO = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
