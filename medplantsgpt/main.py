@@ -1,83 +1,105 @@
 import streamlit as st
+import constants
+from streamlit_lottie import st_lottie
+import json
+import pandas as pd
 
-from medplantsgpt.components.sidebar import sidebar
+CATEGORIES = constants.CATEGORIES
+REGIONS = constants.REGIONS
+PLANTS_INFO = constants.PLANTS_INFO
+PLANTS = list(PLANTS_INFO.keys())
 
 
 def clear_submit():
     st.session_state["submit"] = False
 
 
-st.set_page_config(page_title="MedPlantsGPT", page_icon="📖", layout="wide")
-st.header("📖Base Knowledge")
+def get_data(disctrict=None, region=None):
+    df = pd.DataFrame.from_dict({
+        'Название растения': ['Одуванчик_0 обыкновенные', 'Одуванчик_1 обыкновенные', 'Одуванчик_2 обыкновенные', 'Одуванчик_3 обыкновенные'],
+        'Краснокнижный': ['✅','✅','✅','✅'],
+        'Параметр 1': ['✅','✅','✅','✅'],
+        'Параметр 2': ['✅','✅','✅','✅'],
+        'Параметр 3': ['✅','✅','✅','✅'],
+        'Параметр 4': ['✅','✅','✅','✅']
+    })
+    return df
 
-sidebar()
 
-uploaded_file = st.file_uploader(
-    "Upload a pdf, docx, or txt file",
-    type=["pdf", "docx", "txt"],
-    help="Scanned documents are not supported yet!",
-    on_change=clear_submit,
-)
+def main_page():
+    header_div = st.container()
+    contetn_div = st.container()
+    with header_div:
+        col1, col2 = st.columns((1,3))
 
-index = None
-doc = None
-if uploaded_file is not None:
-    if uploaded_file.name.endswith(".pdf"):
-        doc = parse_pdf(uploaded_file)
-    elif uploaded_file.name.endswith(".docx"):
-        doc = parse_docx(uploaded_file)
-    elif uploaded_file.name.endswith(".txt"):
-        doc = parse_txt(uploaded_file)
-    else:
-        raise ValueError("File type not supported!")
-    text = text_to_docs(doc)
-    try:
-        with st.spinner("Indexing document... This may take a while⏳"):
-            index = embed_docs(text)
-        st.session_state["api_key_configured"] = True
-    except OpenAIError as e:
-        st.error(e._message)
+        lottie_path_teeth = '../data/plant.json'
+        with open(lottie_path_teeth, "r") as f:
+            lottie_teeth = json.load(f)
 
-query = st.text_area("Ask a question about the document", on_change=clear_submit)
-with st.expander("Advanced Options"):
-    show_all_chunks = st.checkbox("Show all chunks retrieved from vector search")
-    show_full_doc = st.checkbox("Show parsed contents of the document")
+        with col1:
+            st_lottie(
+                lottie_teeth,
+                loop=True,
+                quality='high',
+                # height=300,
+                # width=200,
+            )
+        with col2:
+            st.title('🌱 Толковый растениевод')
+            st.markdown(
+                "Узнайте, как выращивать и ухаживать за растениями в вашем регионе\
+                с помощью нашего инновационного сервиса! Мы предлагаем фермерам быстрый\
+                и простой доступ к информации о растениях, которые можно успешно вырастить\
+                в их конкретном местоположении. Наш сервис предоставляет подробные сведения о\
+                различных растениях, включая сезоны посева, оптимальные условия выращивания и\
+                полезные советы по уходу. Теперь у вас есть возможность получить всю необходимую\
+                информацию о растениях, которые помогут вам повысить урожайность и успешно вести\
+                свою фермерскую деятельность. Присоединяйтесь к нам и станьте экспертом в выращивании\
+                растений в вашем регионе!")
+    with contetn_div:
+        enter_params, search_plant = st.tabs(
+            ["Поиск по параметрам", "Информация про растение"])
+        with enter_params:
+            params, tabloid = st.columns((1, 3))
+            with params:
+                disctricts = [x for x in REGIONS.keys()]
+                sel_district = st.selectbox('Выберете округ из списка',
+                                            disctricts)
 
-if show_full_doc and doc:
-    with st.expander("Document"):
-        # Hack to get around st.markdown rendering LaTeX
-        st.markdown(f"<p>{wrap_text_in_html(doc)}</p>", unsafe_allow_html=True)
+                regions = REGIONS[sel_district]
+                sel_region = st.selectbox('Выберете область из списка',
+                                          regions)
 
-button = st.button("Submit")
-if button or st.session_state.get("submit"):
-    if not st.session_state.get("api_key_configured"):
-        st.error("Please configure your OpenAI API key!")
-    elif not index:
-        st.error("Please upload a document!")
-    elif not query:
-        st.error("Please enter a question!")
-    else:
-        st.session_state["submit"] = True
-        # Output Columns
-        answer_col, sources_col = st.columns(2)
-        sources = search_docs(index, query)
+            with tabloid:
+                table = get_data(sel_district, sel_region)
+                st.dataframe(table)
 
-        try:
-            answer = get_answer(sources, query)
-            if not show_all_chunks:
-                # Get the sources for the answer
-                sources = get_sources(answer, sources)
+        with search_plant:
+            choose_plant, info = st.columns((1, 3))
 
-            with answer_col:
-                st.markdown("#### Answer")
-                st.markdown(answer["output_text"].split("SOURCES: ")[0])
+            with choose_plant:
+                sel_plant = st.selectbox('Выберете растение из списка', PLANTS)
+                query = st.text_area(
+                    "Спросить дополнительную информацию у ИИ помощника",
+                    on_change=clear_submit)
+                st.text(f'Вы спросили: {query}')
+                st.text(f'Ответ: здесь будет мудрость от ИИ')
 
-            with sources_col:
-                st.markdown("#### Sources")
-                for source in sources:
-                    st.markdown(source.page_content)
-                    st.markdown(source.metadata["source"])
-                    st.markdown("---")
+            with info:
+                sel_plant = sel_plant.strip().upper()
+                selected_plant = PLANTS_INFO[sel_plant]
+                st.markdown(f'**{sel_plant}**')
+                cats = selected_plant.keys()
+                cats = [x for x in cats if len(selected_plant[x]) > 0]
+                with info:
+                    for cat in cats:
+                        with st.expander(cat):
+                            st.markdown(selected_plant[cat])
+                    st.text('Карта распространения')
+                    st.image('https://plant.depo.msu.ru/open/public/scan.jpg?pcode=MW0436310&fp-type=florus')
 
-        except OpenAIError as e:
-            st.error(e._message)
+
+if __name__ == '__main__':
+    st.set_page_config(page_title="MedPlantsGPT", page_icon="🌱", layout="wide")
+
+    main_page()
