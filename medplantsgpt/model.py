@@ -1,10 +1,12 @@
+from file import (check_index_file_exists, get_index_filepath,
+                  get_name_with_json_extension)
 from langchain import HuggingFacePipeline
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from llama_index import ComposableGraph, GPTListIndex, LLMPredictor, GPTVectorStoreIndex, ServiceContext, \
-    SimpleDirectoryReader, LangchainEmbedding
+from llama_index import (ComposableGraph, GPTListIndex, GPTVectorStoreIndex,
+                         LangchainEmbedding, LLMPredictor, ServiceContext,
+                         SimpleDirectoryReader)
 
-from file import check_index_file_exists, get_index_filepath, get_name_with_json_extension
-
+os.environ['OPENAI_API_KEY'] = 'API-KEY'
 MODEL_NAME = "IlyaGusev/fred_t5_ru_turbo_alpaca"
 
 llm_predictor = LLMPredictor(
