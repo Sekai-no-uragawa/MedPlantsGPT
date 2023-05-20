@@ -16,6 +16,7 @@ rarfile = "^4.0"
 py7zr = "^0.20.5"
 yapf = "^0.33.0"
 pdfminer = "^20191125"
+streamlit-lottie = "^0.0.3"
 
 
 [build-system]
