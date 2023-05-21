@@ -28,14 +28,7 @@
 2. По выбранным расстениям можно найти доп. информацию, а также спросить ИИ ассистента интересующие вопросы и получить консолидированный ответ.
 
 ## Скриншоты решения <a class="anchor" id="task2_1"></a>
+![image](https://github.com/Sekai-no-uragawa/MedPlantsGPT/assets/96841762/e8554ce5-3036-4625-a625-6ea8414dd6dc)
+![image](https://github.com/Sekai-no-uragawa/MedPlantsGPT/assets/96841762/9bc7117e-53a4-41c1-86e8-ab1cb2c740a1)
+![image](https://github.com/Sekai-no-uragawa/MedPlantsGPT/assets/96841762/68c00d87-89f9-4024-8c3a-bcde29dc0e57)
 
-## Что может наше решение <a class="anchor" id="task2_2"></a>
-
-## Что мы хотели бы добавить <a class="anchor" id="task2_3"></a>
-
-# Соответствие техническим критериям <a class="anchor" id="task4"></a>
-## Какую модель выбрали  <a class="anchor" id="task4_2"></a>
-
-## Какую метрику выбрали для проверки точности <a class="anchor" id="task4_3"></a>
-
-## На основе каких библиотек/ПО построено решение  <a class="anchor" id="task4_5"></a>
