@@ -2,6 +2,7 @@ import json
 
 import constants
 from file import find_plants_in_region
+import pickle
 import pandas as pd
 import streamlit as st
 import pydeck as pdk
@@ -40,9 +41,23 @@ def get_data(disctrict=None, region=None, name_to_region=None):
             if plant in EN_TO_RU.keys():
                 ru_planst.append(EN_TO_RU[plant])
 
+        with open(DATA_PATH / 'redbook.pickle', 'rb') as file_pickle:
+            redbook_dict = pickle.load(file_pickle, encoding='utf-8')
+
+        plants_rb = []
+        for plant in ru_planst:
+            if plant in redbook_dict.keys():
+                rb_regions = [x[0] for x in redbook_dict[plant]]
+                if region in rb_regions:
+                    plants_rb.append('Да')
+                else:
+                    plants_rb.append('Нет')
+            else:
+                    plants_rb.append('Нет')
+
         df = pd.DataFrame.from_dict({
             'Название растения': ru_planst,
-            'Краснокнижный': ['✅' for _ in range(len(ru_planst))],
+            'Краснокнижный': plants_rb,
             'Параметр 1': ['✅' for _ in range(len(ru_planst))],
             'Параметр 2': ['✅' for _ in range(len(ru_planst))],
             'Параметр 3': ['✅' for _ in range(len(ru_planst))],
