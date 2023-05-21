@@ -55,13 +55,21 @@ def get_data(disctrict=None, region=None, name_to_region=None):
             else:
                     plants_rb.append('Нет')
 
+        plants_farm = []
+        farma_df = pd.read_csv(DATA_PATH / 'farma.csv')
+        for plant in ru_planst:
+            if plant in farma_df['Наименование раздела на русском языке'].to_list():
+                plants_farm.append('Да')
+            else:
+                plants_farm.append('Нет')
+
         df = pd.DataFrame.from_dict({
             'Название растения': ru_planst,
-            'Краснокнижный': plants_rb,
-            'Параметр 1': ['✅' for _ in range(len(ru_planst))],
-            'Параметр 2': ['✅' for _ in range(len(ru_planst))],
-            'Параметр 3': ['✅' for _ in range(len(ru_planst))],
-            'Параметр 4': ['✅' for _ in range(len(ru_planst))]
+            'Занесена ли культура в Красную книгу?': plants_rb,
+            'Культура входит в государственную  фармакопейю?': plants_farm,
+            'Параметр 2': ['---' for _ in range(len(ru_planst))],
+            'Параметр 3': ['---' for _ in range(len(ru_planst))],
+            'Параметр 4': ['---' for _ in range(len(ru_planst))]
         })
         return df
     else:
