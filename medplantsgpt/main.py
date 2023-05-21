@@ -39,7 +39,7 @@ def get_data(disctrict=None, region=None, name_to_region=None):
         for plant in plants:
             if plant in EN_TO_RU.keys():
                 ru_planst.append(EN_TO_RU[plant])
-    
+
         df = pd.DataFrame.from_dict({
             'Название растения': ru_planst,
             'Краснокнижный': ['✅' for _ in range(len(ru_planst))],
@@ -51,9 +51,9 @@ def get_data(disctrict=None, region=None, name_to_region=None):
         return df
     else:
         return None
-    
-    
-    
+
+
+
 
 
 def get_response_model(query_str, sel_plant):
@@ -168,16 +168,15 @@ def main_page():
                                     latitude=61.160019,
                                     longitude=87.213516,
                                     zoom=3),
-                                layers=[
-                                    pdk.Layer('ScatterplotLayer',
+                                 layers=[
+                                    pdk.Layer('HeatmapLayer',
                                               data=df,
                                               opacity=0.5,
                                               get_position='[lon, lat]',
-                                              radius_scale=6,
-                                              get_radius = 3000,
-                                                auto_highlight = True,
-                                              get_color=['255', '30', '30'])
-                                ],
+                                              aggregation=pdk.types.String("SUM"),
+                                              radiusPixels = 30,
+                                              weightsTextureSize = 256,
+                                              get_color=['255', '30', '30'])]
                             ))
                     else:
                         st.text('Данные по источникам произрастания еще не добавлены')
