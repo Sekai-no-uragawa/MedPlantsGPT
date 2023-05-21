@@ -223,7 +223,10 @@ REGIONS = {
 }
 
 import yaml
-with open("data\dataset\data.yml", "r", encoding='utf-8') as stream:
+from pathlib import Path
+
+DATA_PATH = Path('../data/')
+with open(DATA_PATH / 'dataset' / "data.yml", "r", encoding='utf-8') as stream:
     try:
         PLANTS_INFO = yaml.safe_load(stream)
     except yaml.YAMLError as exc:

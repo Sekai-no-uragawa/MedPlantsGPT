@@ -16,7 +16,7 @@ import yaml
 
 import os
 from dotenv import load_dotenv
-
+from pathlib import Path
 load_dotenv()
 
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
@@ -26,7 +26,7 @@ PLANTS_INFO = constants.PLANTS_INFO
 RU_TO_EN = constants.RU_TO_EN
 EN_TO_RU = constants.EN_TO_RU
 PLANTS = list(PLANTS_INFO.keys())
-
+DATA_PATH = Path('../data/')
 
 def clear_submit():
     st.session_state["submit"] = False
@@ -62,7 +62,7 @@ def get_response_model(query_str, sel_plant):
     # service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, prompt_helper=prompt_helper)
 
     storage_context = StorageContext.from_defaults(
-        persist_dir=f"../data/storage/{plant}")
+        persist_dir= (DATA_PATH / 'storage' / plant).as_posix())
     index = load_index_from_storage(storage_context)
 
     query_engine = index.as_query_engine(text_qa_template=get_prompt())
@@ -77,7 +77,7 @@ def main_page():
     with header_div:
         col1, col2 = st.columns((1, 3))
 
-        lottie_path_teeth = 'data\plant.json'
+        lottie_path_teeth = DATA_PATH / 'plant.json'
         with open(lottie_path_teeth, "r") as f:
             lottie_teeth = json.load(f)
 
@@ -115,7 +115,7 @@ def main_page():
                 sel_region = st.selectbox('Выберете область из списка',
                                           regions)
 
-            with open("C:\\Users\\1bitt\\Documents\\projects\\MedPlantsGPT\\data\\name_to_region.yml", "r", encoding='utf-8') as stream:
+            with open(DATA_PATH / "name_to_region.yml", "r", encoding='utf-8') as stream:
                 try:
                     name_to_region = yaml.load(stream, Loader=yaml.Loader)
                 except yaml.YAMLError as exc:
@@ -152,7 +152,7 @@ def main_page():
                             st.markdown(selected_plant[cat])
                     st.text('Карта распространения')
                     #MAP
-                    with open("C:\\Users\\1bitt\\Documents\\projects\\MedPlantsGPT\\data\\name_to_coord.yml", "r", encoding='utf-8') as stream:
+                    with open(DATA_PATH / "name_to_coord.yml", "r", encoding='utf-8') as stream:
                         try:
                             name_to_coord = yaml.load(stream, Loader=yaml.Loader)
                         except yaml.YAMLError as exc:
