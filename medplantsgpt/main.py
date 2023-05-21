@@ -26,7 +26,7 @@ PLANTS_INFO = constants.PLANTS_INFO
 RU_TO_EN = constants.RU_TO_EN
 EN_TO_RU = constants.EN_TO_RU
 PLANTS = list(PLANTS_INFO.keys())
-DATA_PATH = Path('../data/')
+DATA_PATH = constants.DATA_PATH
 
 def clear_submit():
     st.session_state["submit"] = False

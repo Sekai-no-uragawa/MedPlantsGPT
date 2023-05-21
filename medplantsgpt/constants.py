@@ -225,7 +225,12 @@ REGIONS = {
 import yaml
 from pathlib import Path
 
-DATA_PATH = Path('../data/')
+from sys import platform
+if platform == "darwin":
+    DATA_PATH = Path('../data/')
+elif platform == "win32":
+    DATA_PATH = Path('./data/')
+
 with open(DATA_PATH / 'dataset' / "data.yml", "r", encoding='utf-8') as stream:
     try:
         PLANTS_INFO = yaml.safe_load(stream)
