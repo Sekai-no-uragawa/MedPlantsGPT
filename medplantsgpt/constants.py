@@ -224,6 +224,7 @@ REGIONS = {
 
 import yaml
 from pathlib import Path
+import json
 
 from sys import platform
 if platform == "darwin":
@@ -235,4 +236,10 @@ with open(DATA_PATH / 'dataset' / "data.yml", "r", encoding='utf-8') as stream:
     try:
         PLANTS_INFO = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
+        print(exc)
+
+with open('C:/Users/1bitt/Documents/projects/MedPlantsGPT/data/harvest.json', "r", encoding='utf-8') as stream:
+    try:
+        HARVESTING_INFO = json.load(stream)
+    except json.JSONDecodeError as exc:
         print(exc)

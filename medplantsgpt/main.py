@@ -24,6 +24,7 @@ RU_TO_EN = constants.RU_TO_EN
 EN_TO_RU = constants.EN_TO_RU
 PLANTS = list(PLANTS_INFO.keys())
 DATA_PATH = constants.DATA_PATH
+HARVESTING_INFO = constants.HARVESTING_INFO
 
 def clear_submit():
     st.session_state["submit"] = False
@@ -59,13 +60,25 @@ def get_data(disctrict=None, region=None, name_to_region=None):
             else:
                 plants_farm.append('Нет')
 
+#Аир обыкновенный
+
+        plant_seed = []
+        plant_harv = []
+        for plant in ru_planst:
+            plant = plant.upper()
+            if plant in HARVESTING_INFO.keys():
+                plant_seed.append(HARVESTING_INFO[plant]['Период посева'])
+                plant_harv.append(HARVESTING_INFO[plant]['Период сбора урожая, мес'])
+            else:
+                plant_seed.append('---')
+                plant_harv.append('---')
+
         df = pd.DataFrame.from_dict({
             'Название растения': ru_planst,
             'Культура в Красной книге?': plants_rb,
             'Культура в гос.  фармакопейи?': plants_farm,
-            'Параметр 2': ['---' for _ in range(len(ru_planst))],
-            'Параметр 3': ['---' for _ in range(len(ru_planst))],
-            'Параметр 4': ['---' for _ in range(len(ru_planst))]
+            'Период посева': plant_seed,
+            'Период сбора урожая': plant_harv,
         })
         return df
     else:
