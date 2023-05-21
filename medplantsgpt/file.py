@@ -102,11 +102,7 @@ def find_plants_in_region(region, name_to_region):
                 plants_in_region.append(plant)
                 break  # Прекращаем перебор областей для данного растения
     
-    # Выводим результат
     if len(plants_in_region) > 0:
-        print(f"Растения, растущие в области {region}:")
-        for plant in plants_in_region:
-            print(plant)
         return plants_in_region 
     else:
         print(f"В области {region} нет известных растений.")
