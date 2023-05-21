@@ -87,3 +87,27 @@ def decompress_files_and_get_filepaths(uploaded_file):
 def get_decompress_filepaths():
     filepaths = [os.path.join(compress_path, f) for f in os.listdir(compress_path) if os.path.isfile(os.path.join(compress_path, f))]
     return filepaths
+
+
+
+def find_plants_in_region(region, name_to_region):
+    plants_in_region = []
+    
+    # Перебираем все ключи и значения в словаре областей
+    for plant, regions in name_to_region.items():
+        # Перебираем области для каждого растения
+        for r in regions:
+            if r[0] == region:
+                # Если область совпадает с заданной, добавляем растение в список
+                plants_in_region.append(plant)
+                break  # Прекращаем перебор областей для данного растения
+    
+    # Выводим результат
+    if len(plants_in_region) > 0:
+        print(f"Растения, растущие в области {region}:")
+        for plant in plants_in_region:
+            print(plant)
+        return plants_in_region 
+    else:
+        print(f"В области {region} нет известных растений.")
+        return None

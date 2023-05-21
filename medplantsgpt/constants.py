@@ -119,6 +119,7 @@ RU_TO_EN = {
     'Якорцы стелющиеся':'Tribulus terrestris'
 }
 
+EN_TO_RU = {v: k for k, v in RU_TO_EN.items()}
 
 CATEGORIES = [
     'Описание',

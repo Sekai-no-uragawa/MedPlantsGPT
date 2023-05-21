@@ -5,6 +5,7 @@ from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from llama_index import (ComposableGraph, GPTListIndex, GPTVectorStoreIndex,
                          LangchainEmbedding, LLMPredictor, ServiceContext,
                          SimpleDirectoryReader)
+import os
 
 os.environ['OPENAI_API_KEY'] = 'API-KEY'
 MODEL_NAME = "IlyaGusev/fred_t5_ru_turbo_alpaca"

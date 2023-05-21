@@ -1,6 +1,7 @@
 import json
 
 import constants
+from file import find_plants_in_region
 import pandas as pd
 import streamlit as st
 import pydeck as pdk
@@ -23,6 +24,7 @@ CATEGORIES = constants.CATEGORIES
 REGIONS = constants.REGIONS
 PLANTS_INFO = constants.PLANTS_INFO
 RU_TO_EN = constants.RU_TO_EN
+EN_TO_RU = constants.EN_TO_RU
 PLANTS = list(PLANTS_INFO.keys())
 
 
@@ -30,19 +32,28 @@ def clear_submit():
     st.session_state["submit"] = False
 
 
-def get_data(disctrict=None, region=None):
-    df = pd.DataFrame.from_dict({
-        'Название растения': [
-            'Одуванчик_0 обыкновенные', 'Одуванчик_1 обыкновенные',
-            'Одуванчик_2 обыкновенные', 'Одуванчик_3 обыкновенные'
-        ],
-        'Краснокнижный': ['✅', '✅', '✅', '✅'],
-        'Параметр 1': ['✅', '✅', '✅', '✅'],
-        'Параметр 2': ['✅', '✅', '✅', '✅'],
-        'Параметр 3': ['✅', '✅', '✅', '✅'],
-        'Параметр 4': ['✅', '✅', '✅', '✅']
-    })
-    return df
+def get_data(disctrict=None, region=None, name_to_region=None):
+    plants = find_plants_in_region(region, name_to_region)
+    ru_planst = []
+    if plants:
+        for plant in plants:
+            if plant in EN_TO_RU.keys():
+                ru_planst.append(EN_TO_RU[plant])
+    
+        df = pd.DataFrame.from_dict({
+            'Название растения': ru_planst,
+            'Краснокнижный': ['✅' for _ in range(len(ru_planst))],
+            'Параметр 1': ['✅' for _ in range(len(ru_planst))],
+            'Параметр 2': ['✅' for _ in range(len(ru_planst))],
+            'Параметр 3': ['✅' for _ in range(len(ru_planst))],
+            'Параметр 4': ['✅' for _ in range(len(ru_planst))]
+        })
+        return df
+    else:
+        return None
+    
+    
+    
 
 
 def get_response_model(query_str, sel_plant):
@@ -104,9 +115,18 @@ def main_page():
                 sel_region = st.selectbox('Выберете область из списка',
                                           regions)
 
+            with open("C:\\Users\\1bitt\\Documents\\projects\\MedPlantsGPT\\data\\name_to_region.yml", "r", encoding='utf-8') as stream:
+                try:
+                    name_to_region = yaml.load(stream, Loader=yaml.Loader)
+                except yaml.YAMLError as exc:
+                    print(exc)
+
             with tabloid:
-                table = get_data(sel_district, sel_region)
-                st.dataframe(table)
+                table = get_data(sel_district, sel_region, name_to_region)
+                if table is not None:
+                    st.dataframe(table)
+                else:
+                    st.text('Данные по растениям в базе не найдены')
 
         with search_plant:
             choose_plant, info = st.columns((1, 3))
